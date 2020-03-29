@@ -1,4 +1,6 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@io_bazel_rules_docker//go:image.bzl", "go_image")
+load("@io_bazel_rules_docker//container:container.bzl", "container_image")
 
 go_library(
     name = "go_default_library",
@@ -18,4 +20,18 @@ go_binary(
     name = "basic",
     embed = [":go_default_library"],
     visibility = ["//visibility:public"],
+    out = "basic"
 )
+
+go_image(
+    name = "image",
+    binary = ":basic"
+)
+
+container_image(
+    name = "latest",
+    base = ":image",
+    ports = ["9080"],
+    cmd = ["basic"],
+)
+
