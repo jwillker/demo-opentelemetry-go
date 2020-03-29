@@ -9,7 +9,7 @@ import (
 	"go.opentelemetry.io/otel/api/global"
 	"go.opentelemetry.io/otel/api/key"
 	"go.opentelemetry.io/otel/api/metric"
-	"go.opentelemetry.io/otel/exporter/metric/prometheus"
+	"go.opentelemetry.io/otel/exporters/metric/prometheus"
 	"go.opentelemetry.io/otel/sdk/metric/controller/push"
 )
 
@@ -18,7 +18,7 @@ func initMeter() *push.Controller {
 	if err != nil {
 		log.Panicf("failed to initialize prometheus exporter %v", err)
 	}
-	http.HandleFunc("/", hf)
+	http.HandleFunc("/metrics", hf)
 	go func() {
 		_ = http.ListenAndServe(":9080", nil)
 	}()
@@ -29,34 +29,35 @@ func initMeter() *push.Controller {
 func main() {
 	defer initMeter().Stop()
 
-	meter := global.MeterProvider().Meter("ex.com/basic")
+	meter := global.Meter("transactions")
 
-	transaction := meter.NewInt64Counter(
-		"transaction.total",
+	transactions := metric.Must(meter).NewInt64Counter(
+		"transactions.total",
 		metric.WithKeys(key.New("status")),
 	)
-	transactionLabels := meter.Labels(key.String("status", "pending"))
+	transactionsLabels := meter.Labels(key.String("status", "pending"))
 
 	ctx := context.Background()
 
 	meter.RecordBatch(
 		ctx,
-		transactionLabels,
-		transaction.Measurement(1),
+		transactionsLabels,
+		transactions.Measurement(1),
 	)
 	time.Sleep(5 * time.Second)
 
 	meter.RecordBatch(
 		ctx,
 		meter.Labels(key.String("status", "completed")),
-		transaction.Measurement(1),
+		transactions.Measurement(1),
 	)
 	time.Sleep(5 * time.Second)
 
 	meter.RecordBatch(
 		ctx,
-		transactionLabels,
-		transaction.Measurement(1),
+		transactionsLabels,
+		transactions.Measurement(1),
 	)
-	time.Sleep(5 * time.Second)
+
+	time.Sleep(100 * time.Second)
 }
