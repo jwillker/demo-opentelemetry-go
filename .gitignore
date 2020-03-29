@@ -1,0 +1,6 @@
+bazel
+bazel-bin
+bazel-opentelemetry-go
+bazel-opt
+bazel-out
+bazel-testlogs
