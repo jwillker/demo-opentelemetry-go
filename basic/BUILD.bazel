@@ -1,0 +1,21 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["main.go"],
+    importpath = "opentelemetry-go/basic",
+    visibility = ["//visibility:private"],
+    deps = [
+        "@io_opentelemetry_go_otel//api/global:go_default_library",
+        "@io_opentelemetry_go_otel//api/key:go_default_library",
+        "@io_opentelemetry_go_otel//api/metric:go_default_library",
+        "@io_opentelemetry_go_otel//sdk/metric/controller/push:go_default_library",
+        "@io_opentelemetry_go_otel_exporters_metric_prometheus//:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "basic",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+)
