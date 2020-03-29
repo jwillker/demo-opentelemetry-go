@@ -59,5 +59,5 @@ func main() {
 		transactions.Measurement(1),
 	)
 
-	time.Sleep(100 * time.Second)
+	time.Sleep(1000 * time.Second)
 }
