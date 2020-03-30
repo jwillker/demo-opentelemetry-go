@@ -1,5 +1,10 @@
 # Opentelemetry Prometheus metrics demo
 
+![Build](https://github.com/JohnWillker/demo-opentelemetry-go/workflows/Build/badge.svg)
+![Docker](https://img.shields.io/badge/Supports-Docker-blue)
+![Bazel](https://img.shields.io/badge/Supports-Bazel-brightgreen)
+[![Built with Spacemacs](https://cdn.rawgit.com/syl20bnr/spacemacs/develop/assets/spacemacs-badge.svg)](http://github.com/syl20bnr/spacemacs)
+
 There are two directories with Go code to demonstrate how to use Opentelemetry to export metrics in Prometheus format.
 
 # Quick Start
