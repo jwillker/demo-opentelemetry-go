@@ -1,0 +1,15 @@
+global:
+  scrape_interval:     15s
+
+scrape_configs:
+  # 'basic' service
+  - job_name: 'basic'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['basic:9080']
+
+  # 'rest' service
+  - job_name: 'rest'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['rest:9080']

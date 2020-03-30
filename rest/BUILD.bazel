@@ -1,0 +1,37 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@io_bazel_rules_docker//go:image.bzl", "go_image")
+load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["main.go"],
+    importpath = "opentelemetry-go/rest",
+    visibility = ["//visibility:private"],
+    deps = [
+        "@com_github_go_chi_chi//:go_default_library",
+        "@io_opentelemetry_go_otel//api/global:go_default_library",
+        "@io_opentelemetry_go_otel//api/key:go_default_library",
+        "@io_opentelemetry_go_otel//api/metric:go_default_library",
+        "@io_opentelemetry_go_otel//sdk/metric/controller/push:go_default_library",
+        "@io_opentelemetry_go_otel_exporters_metric_prometheus//:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "rest",
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+    out = "rest"
+)
+
+go_image(
+    name = "image",
+    binary = ":rest"
+)
+
+container_image(
+    name = "latest",
+    base = ":image",
+    ports = ["9080", "3000"],
+    cmd = ["rest"],
+)
